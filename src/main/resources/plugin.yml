@@ -1,0 +1,9 @@
+main: aldrigos.mc.alchemy.AlchemyPlugin
+name: Alchemy
+version: '0.1.0.0'
+description: Potions / enchant fusion
+load: POSTWORLD
+author: Aldrigo Raffaele
+website: spigotmc.org
+prefix: Alchemy
+api-version: 1.14
