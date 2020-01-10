@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.*;
 
+import java.util.Arrays;
+
 public class CraftListener implements Listener {
     private final AlchemyPlugin p;
 
@@ -17,6 +19,8 @@ public class CraftListener implements Listener {
     }
 
     private ItemStack potionFusion(ItemStack[] craftMatrix){
+        if(Arrays.stream(craftMatrix).filter(s -> s != null && s.getType() == Material.POTION).count() < 2)
+            return null;
         var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
 
         for(var ing: craftMatrix) {

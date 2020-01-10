@@ -21,6 +21,8 @@ public class AlchemyPlugin extends JavaPlugin {
     public void onEnable(){
         getServer().addRecipe(getFusePotionRecipe());
 
-        getServer().getPluginManager().registerEvents(new CraftListener(this), this);
+        var pm = getServer().getPluginManager();
+        pm.registerEvents(new CraftListener(this), this);
+        pm.registerEvents(new BrewListener(this), this);
     }
 }
