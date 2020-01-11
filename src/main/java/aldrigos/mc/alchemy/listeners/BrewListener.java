@@ -4,6 +4,8 @@ import aldrigos.mc.alchemy.*;
 import org.bukkit.Material;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 public class BrewListener implements Listener {
     private final AlchemyPlugin plugin;
@@ -14,12 +16,51 @@ public class BrewListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBrew(BrewEvent e){
-        if( e.getContents().getIngredient() == null || e.getContents().getIngredient().getType() != Material.GUNPOWDER)
+        var ingredient = e.getContents().getIngredient();
+        if(ingredient == null)
             return;
 
-        for(var res: e.getContents().getStorageContents()){
-            if(res != null)
-                plugin.getLogger().info(res.toString());
+        switch (ingredient.getType()) {
+            case GUNPOWDER:
+                handleSplash(e);
+                break;
+            case DRAGON_BREATH:
+                handleLingering(e);
+                break;
+        }
+    }
+
+    private void handleLingering(BrewEvent e) {
+        for(int i=0; i< 3; i++){
+            ItemStack result = e.getContents().getItem(i);
+            if(result == null || !result.hasItemMeta() || result.getType() != Material.SPLASH_POTION)
+                continue;
+
+            var pot = (PotionMeta) result.getItemMeta();
+            if(!pot.hasCustomEffects())
+                return;
+
+            var fusedSplash = new ItemStack(Material.LINGERING_POTION);
+            fusedSplash.setItemMeta(pot);
+
+            e.getContents().setItem(i, fusedSplash);
+        }
+    }
+
+    private void handleSplash(BrewEvent e) {
+        for(int i=0; i< 3; i++) {
+            ItemStack result = e.getContents().getItem(i);
+            if(result == null || !result.hasItemMeta() || result.getType() != Material.POTION)
+                continue;
+
+            var pot = (PotionMeta) result.getItemMeta();
+            if(!pot.hasCustomEffects())
+                return;
+
+            var fusedSplash = new ItemStack(Material.SPLASH_POTION);
+            fusedSplash.setItemMeta(pot);
+
+            e.getContents().setItem(i, fusedSplash);
         }
     }
 }
