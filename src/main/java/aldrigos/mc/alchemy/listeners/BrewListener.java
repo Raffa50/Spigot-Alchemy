@@ -21,12 +21,32 @@ public class BrewListener implements Listener {
             return;
 
         switch (ingredient.getType()) {
+            case GLOWSTONE:
+                handleExtension(e);
+                break;
+            case REDSTONE:
+                //handleUpgrade(e);
+                break;
             case GUNPOWDER:
                 handleSplash(e);
                 break;
             case DRAGON_BREATH:
                 handleLingering(e);
                 break;
+        }
+    }
+
+    private void handleExtension(BrewEvent e) {
+        for(int i=0; i< 3; i++){
+            ItemStack result = e.getContents().getItem(i);
+            if(result == null || !result.hasItemMeta() || result.getType() != Material.POTION)
+                continue;
+
+            var pot = (PotionMeta) result.getItemMeta();
+            var pd = pot.getBasePotionData();
+            if(pd.isUpgraded() && !pd.isExtended()){
+                //var newMeta =
+            }
         }
     }
 
