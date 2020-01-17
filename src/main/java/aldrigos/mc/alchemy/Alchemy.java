@@ -18,7 +18,7 @@ public class Alchemy {
             var fuse = (PotionMeta) p.getItemMeta();
             var pd = fuse.getBasePotionData();
             var eff = pd.getType().getEffectType();
-            int duration = pd.isExtended() ? 20*180 : 20*90;
+            int duration = getDuration(pd.getType(), pd.isExtended(), pd.isUpgraded());
 
             if( eff != null)
                 meta.addCustomEffect(
@@ -35,13 +35,23 @@ public class Alchemy {
         return res;
     }
 
-    private static final Map<PotionType, Integer> potionDuration = new HashMap<>();
+    private static final Map<PotionDataAdapter, Integer> potionDuration = new HashMap<>();
+
+    public static void setDuration(PotionType pt, boolean extended, boolean enhanced, int duration){
+        potionDuration.put(new PotionDataAdapter(pt, extended, enhanced), duration);
+    }
 
     static {
-
+        setDuration(PotionType.REGEN, false, false, 42*20);
+        setDuration(PotionType.REGEN, true, false, 90*20);
+        setDuration(PotionType.REGEN, false, true, 22*20);
+        setDuration(PotionType.REGEN, true, true, 66*20);
     }
 
     public static int getDuration(PotionType pt, boolean extended, boolean enhanced){
-        return 20*60;
+        Integer duration = potionDuration.get(new PotionDataAdapter(pt, extended, enhanced));
+        return duration != null ?
+                duration :
+                (extended ? (enhanced ? 90*20 : 20*180) : (enhanced ? 20*60 : 20*90));
     }
 }
