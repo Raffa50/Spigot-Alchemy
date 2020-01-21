@@ -21,11 +21,9 @@ public class BrewListener implements Listener {
             return;
 
         switch (ingredient.getType()) {
-            case GLOWSTONE:
-                handleExtension(e);
-                break;
             case REDSTONE:
-                //handleUpgrade(e);
+            case GLOWSTONE:
+                handleExtendedUpgrade(e);
                 break;
             case GUNPOWDER:
                 handleSplash(e);
@@ -36,7 +34,7 @@ public class BrewListener implements Listener {
         }
     }
 
-    private void handleExtension(BrewEvent e) {
+    private void handleExtendedUpgrade(BrewEvent e) {
         for(int i=0; i< 3; i++){
             ItemStack result = e.getContents().getItem(i);
             if(result == null || !result.hasItemMeta() || result.getType() != Material.POTION)
@@ -44,8 +42,13 @@ public class BrewListener implements Listener {
 
             var pot = (PotionMeta) result.getItemMeta();
             var pd = pot.getBasePotionData();
-            if(pd.isUpgraded() && !pd.isExtended()){
-                //var newMeta =
+            if(pd.isUpgraded() ^ pd.isExtended()){
+                var eup =
+                        pot.hasCustomEffects() ?
+                        Alchemy.createExtendedUpgradedPotion(Utils.toArray(pot.getCustomEffects())) :
+                        Alchemy.createExtendedUpgradedPotion(pd.getType());
+
+                e.getContents().setItem(i, eup);
             }
         }
     }

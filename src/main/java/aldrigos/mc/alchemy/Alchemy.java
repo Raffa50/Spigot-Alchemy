@@ -35,6 +35,39 @@ public class Alchemy {
         return res;
     }
 
+    private static void setEffects(PotionMeta meta, PotionEffect... effects){
+
+    }
+
+    private static PotionEffect getExtendedUpgradedEffect(PotionType potionType){
+        return new PotionEffect(
+                potionType.getEffectType(),
+                getDuration(potionType, true, true),
+                1);
+    }
+
+    public static ItemStack createExtendedUpgradedPotion(PotionType potionType){
+        var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
+        meta.setBasePotionData(new PotionData(PotionType.THICK));
+        meta.setColor(potionType.getEffectType().getColor());
+        meta.setDisplayName(potionType.getEffectType().getName());
+        setEffects(meta, getExtendedUpgradedEffect(potionType));
+
+        var item = new ItemStack(Material.POTION);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack createExtendedUpgradedPotion(PotionEffect... effects){
+        var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
+        meta.setBasePotionData(new PotionData(PotionType.THICK));
+        setEffects(meta, effects);
+
+        var res = new ItemStack(Material.POTION);
+        res.setItemMeta(meta);
+        return res;
+    }
+
     private static final Map<PotionDataAdapter, Integer> potionDuration = new HashMap<>();
 
     public static void setDuration(PotionType pt, boolean extended, boolean enhanced, int duration){
