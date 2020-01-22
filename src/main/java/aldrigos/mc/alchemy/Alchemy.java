@@ -18,7 +18,7 @@ public class Alchemy {
             var fuse = (PotionMeta) p.getItemMeta();
             var pd = fuse.getBasePotionData();
             var eff = pd.getType().getEffectType();
-            int duration = getDuration(pd.getType(), pd.isExtended(), pd.isUpgraded());
+            int duration = getDuration(eff, pd.isExtended(), pd.isUpgraded());
 
             if( eff != null)
                 meta.addCustomEffect(
@@ -36,22 +36,27 @@ public class Alchemy {
     }
 
     private static void setEffects(PotionMeta meta, PotionEffect... effects){
-
+        for(var eff: effects)
+            meta.addCustomEffect(
+                getExtendedUpgradedEffect(eff.getType()),
+                true
+            );
     }
 
-    private static PotionEffect getExtendedUpgradedEffect(PotionType potionType){
+    private static PotionEffect getExtendedUpgradedEffect(PotionEffectType potionEffType){
         return new PotionEffect(
-                potionType.getEffectType(),
-                getDuration(potionType, true, true),
+                potionEffType,
+                getDuration(potionEffType, true, true),
                 1);
     }
 
     public static ItemStack createExtendedUpgradedPotion(PotionType potionType){
         var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
-        meta.setBasePotionData(new PotionData(PotionType.THICK));
+        meta.setBasePotionData(new PotionData(potionType));
+        /*meta.setBasePotionData(new PotionData(PotionType.THICK));
         meta.setColor(potionType.getEffectType().getColor());
-        meta.setDisplayName(potionType.getEffectType().getName());
-        setEffects(meta, getExtendedUpgradedEffect(potionType));
+        meta.setDisplayName(potionType.getEffectType().getName());*/
+        setEffects(meta, getExtendedUpgradedEffect(potionType.getEffectType()));
 
         var item = new ItemStack(Material.POTION);
         item.setItemMeta(meta);
@@ -70,19 +75,19 @@ public class Alchemy {
 
     private static final Map<PotionDataAdapter, Integer> potionDuration = new HashMap<>();
 
-    public static void setDuration(PotionType pt, boolean extended, boolean enhanced, int duration){
+    public static void setDuration(PotionEffectType pt, boolean extended, boolean enhanced, int duration){
         potionDuration.put(new PotionDataAdapter(pt, extended, enhanced), duration);
     }
 
     static {
-        setDuration(PotionType.REGEN, false, false, 42*20);
-        setDuration(PotionType.REGEN, true, false, 90*20);
-        setDuration(PotionType.REGEN, false, true, 22*20);
-        setDuration(PotionType.REGEN, true, true, 66*20);
+        setDuration(PotionEffectType.REGENERATION, false, false, 42*20);
+        setDuration(PotionEffectType.REGENERATION, true, false, 90*20);
+        setDuration(PotionEffectType.REGENERATION, false, true, 22*20);
+        setDuration(PotionEffectType.REGENERATION, true, true, 66*20);
     }
 
-    public static int getDuration(PotionType pt, boolean extended, boolean enhanced){
-        Integer duration = potionDuration.get(new PotionDataAdapter(pt, extended, enhanced));
+    public static int getDuration(PotionEffectType pet, boolean extended, boolean enhanced){
+        Integer duration = potionDuration.get(new PotionDataAdapter(pet, extended, enhanced));
         return duration != null ?
                 duration :
                 (extended ? (enhanced ? 90*20 : 20*180) : (enhanced ? 20*60 : 20*90));
