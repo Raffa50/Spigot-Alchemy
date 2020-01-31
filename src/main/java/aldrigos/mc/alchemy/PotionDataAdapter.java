@@ -7,7 +7,7 @@ class PotionDataAdapter {
     public boolean isExtended;
     public boolean isEnhanced;
 
-    public PotionDataAdapter(){}
+    PotionDataAdapter(){}
 
     public PotionDataAdapter(PotionEffectType pet, boolean extended, boolean enhanced){
         potionEffectType = pet;

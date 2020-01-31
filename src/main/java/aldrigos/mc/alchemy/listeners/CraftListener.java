@@ -29,7 +29,7 @@ public class CraftListener implements Listener {
         if(potions.size() < 2)
             return null;
 
-        return Alchemy.createFusedPotion(potions);
+        return p.getApi().createFusedPotion(potions);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

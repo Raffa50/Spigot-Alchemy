@@ -1,28 +1,25 @@
 package aldrigos.mc.alchemy;
 
 import aldrigos.mc.alchemy.listeners.*;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.*;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AlchemyPlugin extends JavaPlugin {
-    private Recipe getFusePotionRecipe(){
-        var r = new ShapelessRecipe(
-            new NamespacedKey(this, "fusedpotion"),
-            new ItemStack(Material.POTION)
-        );
-        r.addIngredient(2, Material.POTION);
+    private Alchemy api;
 
-        return r;
-    }
+    public Alchemy getApi(){ return api; }
 
     @Override
     public void onEnable(){
-        getServer().addRecipe(getFusePotionRecipe());
+        api = new Alchemy();
 
         var pm = getServer().getPluginManager();
         pm.registerEvents(new CraftListener(this), this);
         pm.registerEvents(new BrewListener(this), this);
+    }
+
+    @Override
+    public void onDisable(){
+        HandlerList.unregisterAll(this);
     }
 }
