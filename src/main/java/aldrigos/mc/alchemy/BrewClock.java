@@ -6,6 +6,7 @@ import org.bukkit.block.BrewingStand;
 import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.*;
 
 class BrewClock extends BukkitRunnable
 {
@@ -14,13 +15,13 @@ class BrewClock extends BukkitRunnable
     private final BrewingStand stand;
     private int time = 20;
 
-    public BrewClock(BrewingRecipe recipe , BrewerInventory inventory) {
+    public BrewClock(@NotNull BrewingRecipe recipe , @NotNull BrewerInventory inventory) {
         this.recipe = recipe;
         this.inventory = inventory;
         this.stand = inventory.getHolder();
     }
 
-    public void start(Plugin plugin){
+    public void start(@NotNull Plugin plugin){
         runTaskTimer(plugin, 1L, 1L);
     }
 

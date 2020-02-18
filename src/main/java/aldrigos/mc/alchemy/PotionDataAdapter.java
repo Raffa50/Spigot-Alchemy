@@ -2,9 +2,7 @@ package aldrigos.mc.alchemy;
 
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.Serializable;
-
-class PotionDataAdapter implements Serializable {
+class PotionDataAdapter {
     public PotionEffectType potionEffectType;
     public boolean isExtended;
     public boolean isEnhanced;

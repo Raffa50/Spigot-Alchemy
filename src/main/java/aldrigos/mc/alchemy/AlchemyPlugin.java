@@ -3,21 +3,23 @@ package aldrigos.mc.alchemy;
 import aldrigos.mc.alchemy.listeners.*;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.*;
 
 import java.io.IOException;
 
 public class AlchemyPlugin extends JavaPlugin {
     final static String directory = "plugins/alchemy/";
 
-    private Alchemy api;
+    private static Alchemy api;
 
-    public Alchemy getApi(){ return api; }
+    @NotNull
+    public static Alchemy getApi(){ return api; }
 
     @Override
     public void onEnable(){
         try {
             api = Alchemy.load(directory);
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             getLogger().severe("[Alchemy]Failed to load");
             setEnabled(false);

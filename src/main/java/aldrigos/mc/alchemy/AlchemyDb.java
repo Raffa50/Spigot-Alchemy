@@ -4,11 +4,11 @@ import aldrigos.mc.alchemy.recipes.BrewingRecipe;
 import org.bukkit.Material;
 import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.*;
 
-import java.io.Serializable;
 import java.util.*;
 
-public final class AlchemyDb implements Serializable {
+public final class AlchemyDb {
     private final Map<PotionDataAdapter, Integer> potionsDuration = new HashMap<>();
     final Collection<BrewingRecipe> recipes = new ArrayList<>();
 
@@ -74,9 +74,10 @@ public final class AlchemyDb implements Serializable {
                 (extended ? (enhanced ? 90*20 : 20*180) : (enhanced ? 20*60 : 20*90));
     }
 
+    @NotNull
     public Iterable<BrewingRecipe> getRecipes(){ return recipes; }
 
-    public BrewingRecipe getRecipe(BrewerInventory inventory)
+    public BrewingRecipe getRecipe(@NotNull BrewerInventory inventory)
     {
         var ingr = inventory.getIngredient();
         if(ingr == null || ingr.getType() == Material.AIR)

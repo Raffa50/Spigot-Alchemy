@@ -33,7 +33,7 @@ public class BrewListener implements Listener {
         if(ingr != null && api.isIngredient(ingr)) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 ingr.setAmount(ingr.getAmount() - 1);
-                brewInv.setIngredient(new ItemStack(Material.GOLD_NUGGET));
+                brewInv.setIngredient(new ItemStack(ingr.getType()));
 
                 api.startBrewing(brewInv, plugin);
             }, 1L);
