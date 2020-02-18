@@ -77,6 +77,7 @@ public final class AlchemyDb {
     @NotNull
     public Iterable<BrewingRecipe> getRecipes(){ return recipes; }
 
+    @Nullable
     public BrewingRecipe getRecipe(@NotNull BrewerInventory inventory)
     {
         var ingr = inventory.getIngredient();

@@ -1,7 +1,6 @@
 package aldrigos.mc.alchemy;
 
 import aldrigos.mc.alchemy.recipes.*;
-import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -11,46 +10,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.*;
 import org.jetbrains.annotations.*;
 
-import java.io.*;
 import java.util.Arrays;
 
 public final class Alchemy {
-    private static ExtendedUpgradedBrewingRecipe eubr;
     public final AlchemyDb db;
 
-    private Alchemy(AlchemyDb db){
-        this.db = db;
-    }
-
-    @NotNull
-    static Alchemy load(String path) throws IOException {
-        var saveFile = new File(path+"db.json");
-
-        Alchemy ret;
-        if(saveFile.exists()) {
-            try(var file = new FileReader(saveFile)) {
-                var db = new Gson().fromJson(file, AlchemyDb.class);
-                ret = new Alchemy(db);
-            }
-        }else {
-            ret = new Alchemy(new AlchemyDb());
-            ret.addRecipes(witherPotionRecipe());
-        }
-
-        eubr = new ExtendedUpgradedBrewingRecipe(ret);
-        ret.addRecipes(eubr);
-        return ret;
-    }
-
-    void save(String path) throws IOException{
-        var dir = new File(path);
-        if(!dir.exists())
-            dir.mkdir();
-
-        db.recipes.remove(eubr);
-        try(var file = new FileWriter(path+"db.json")){
-            file.write(new Gson().toJson(db));
-        }
+    Alchemy(){
+        this.db = new AlchemyDb();
+        addRecipes(witherPotionRecipe(), new ExtendedUpgradedBrewingRecipe(this));
     }
 
     public static boolean isEffectPotion(@NotNull ItemStack i){
