@@ -7,11 +7,3 @@ author: Aldrigo Raffaele
 website: https://github.com/Raffa50/Spigot-Alchemy/
 prefix: Alchemy
 api-version: 1.14
-
-commands:
-  ayinf:
-    description: info of an item
-
-permissions:
-  ayinf:
-    default: op
