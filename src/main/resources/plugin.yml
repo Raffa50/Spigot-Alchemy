@@ -1,9 +1,17 @@
 main: aldrigos.mc.alchemy.AlchemyPlugin
 name: Alchemy
-version: '0.2.0.2'
+version: '0.2.0.3'
 description: Potions fusion and custom potions API
 load: POSTWORLD
 author: Aldrigo Raffaele
 website: https://github.com/Raffa50/Spigot-Alchemy/
 prefix: Alchemy
 api-version: 1.14
+
+commands:
+  ayinf:
+    description: info of an item
+
+permissions:
+  ayinf:
+    default: op

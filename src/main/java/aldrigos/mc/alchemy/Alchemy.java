@@ -2,8 +2,10 @@ package aldrigos.mc.alchemy;
 
 import aldrigos.mc.alchemy.recipes.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
@@ -36,12 +38,29 @@ public final class Alchemy {
         return false;
     }
 
-    public void startBrewing(@NotNull BrewerInventory inv, @NotNull Plugin p){
+    public void startBrewing(@NotNull HumanEntity crafter, @NotNull BrewerInventory inv, @NotNull Plugin p){
         var recipe = db.getRecipe(inv);
-        if(recipe == null)
+        if(recipe == null) {
+            if(couldCraft(inv))
+                crafter.sendMessage(ChatColor.RED+"[Alchemy]No recipes for this combination"+ChatColor.RESET);
             return;
+        }
 
+        crafter.sendMessage(ChatColor.GREEN+"[Alchemy]Brewing..."+ChatColor.RESET);
         new BrewClock(recipe, inv).start(p);
+    }
+
+    private static boolean couldCraft(@NotNull BrewerInventory inv){
+        if(inv.getIngredient() == null || inv.getIngredient().getType() == Material.AIR)
+            return false;
+
+        for(int i= 0; i < 3; i++){
+            var item = inv.getItem(i);
+            if(item != null && item.getType() != Material.AIR)
+                return true;
+        }
+
+        return false;
     }
 
     @NotNull
@@ -111,7 +130,7 @@ public final class Alchemy {
 
     @NotNull
     static BrewingRecipe witherPotionRecipe(){
-        var toBrew = new ItemStack(Material.POTION, 3);
+        var toBrew = new ItemStack(Material.POTION);
         var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
         meta.setBasePotionData(new PotionData(PotionType.AWKWARD));
         toBrew.setItemMeta(meta);

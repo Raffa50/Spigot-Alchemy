@@ -1,5 +1,6 @@
 package aldrigos.mc.alchemy.recipes;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.*;
@@ -31,6 +32,8 @@ public class SimpleBrewingRecipe implements BrewingRecipe {
     public boolean matches(@NotNull ItemStack ingredient, @NotNull ItemStack toBrew) {
         if(strict)
             return this.ingredient.isSimilar(ingredient) && this.toBrew.isSimilar(toBrew);
+
+        //Bukkit.getLogger().info("[Alchemy]"+this.toBrew.toString());
         return this.ingredient.getType() == ingredient.getType() && this.toBrew.isSimilar(toBrew);
     }
 

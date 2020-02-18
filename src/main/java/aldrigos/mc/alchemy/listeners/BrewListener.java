@@ -20,7 +20,7 @@ public class BrewListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onBrewPlaceIngredient(InventoryClickEvent e){
+    public void onBrewPlaceIngredient(final InventoryClickEvent e){
         if(e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.BREWING ||
             e.getSlotType() != InventoryType.SlotType.FUEL ||
             e.getAction() != InventoryAction.PLACE_ALL ||
@@ -31,11 +31,13 @@ public class BrewListener implements Listener {
         final ItemStack ingr = e.getCursor();
 
         if(ingr != null && api.isIngredient(ingr)) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                ingr.setAmount(ingr.getAmount() - 1);
-                brewInv.setIngredient(new ItemStack(ingr.getType()));
+            var clone = ingr.clone();
+            ingr.setAmount(ingr.getAmount() - 1);
 
-                api.startBrewing(brewInv, plugin);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                brewInv.setIngredient(clone);
+
+                api.startBrewing(e.getWhoClicked(), brewInv, plugin);
             }, 1L);
             ((Player) e.getWhoClicked()).updateInventory();
         }
@@ -51,7 +53,7 @@ public class BrewListener implements Listener {
 
         var brewInv = (BrewerInventory) e.getClickedInventory();
 
-        api.startBrewing(brewInv, plugin);
+        api.startBrewing(e.getWhoClicked(),brewInv, plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
