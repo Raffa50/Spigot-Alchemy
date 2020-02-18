@@ -1,23 +1,23 @@
 package aldrigos.mc.alchemy;
 
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.PotionEffectType;
 
 class PotionDataAdapter {
-    public PotionType potionType;
+    public PotionEffectType potionEffectType;
     public boolean isExtended;
     public boolean isEnhanced;
 
-    public PotionDataAdapter(){}
+    PotionDataAdapter(){}
 
-    public PotionDataAdapter(PotionType potionType, boolean isExtended, boolean isEnhanced){
-        this.potionType = potionType;
-        this.isExtended = isExtended;
-        this.isEnhanced = isEnhanced;
+    public PotionDataAdapter(PotionEffectType pet, boolean extended, boolean enhanced){
+        potionEffectType = pet;
+        this.isExtended = extended;
+        this.isEnhanced = enhanced;
     }
 
     @Override
     public int hashCode(){
-        return potionType.hashCode() + (isExtended ? 1 : 0) + (isEnhanced ? 1 : 0);
+        return potionEffectType.hashCode() + (isExtended ? 1 : 0) + (isEnhanced ? 1 : 0);
     }
 
     @Override
@@ -29,6 +29,6 @@ class PotionDataAdapter {
     }
 
     public boolean equals(PotionDataAdapter p){
-        return p != null && potionType == p.potionType && isEnhanced == p.isEnhanced && isExtended == p.isExtended;
+        return p != null && potionEffectType == p.potionEffectType && isEnhanced == p.isEnhanced && isExtended == p.isExtended;
     }
 }
