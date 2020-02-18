@@ -1,19 +1,72 @@
 package aldrigos.mc.alchemy;
 
-import aldrigos.mc.alchemy.recipes.ExtendedUpgradedBrewingRecipe;
+import aldrigos.mc.alchemy.recipes.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.*;
 
+import java.io.*;
+import java.util.Arrays;
+
 public final class Alchemy {
+    private static ExtendedUpgradedBrewingRecipe eubr;
     public final AlchemyDb db;
 
-    Alchemy(){
-        db = new AlchemyDb();
-        db.recipes.add(new ExtendedUpgradedBrewingRecipe(this));
+    private Alchemy(AlchemyDb db){
+        this.db = db;
+    }
+
+    static Alchemy load(String path) throws IOException, ClassNotFoundException {
+        var saveFile = new File(path+"db.bin");
+
+        Alchemy ret;
+        if(saveFile.exists()) {
+            try(var file = new FileInputStream(path+"db.bin")) {
+                var in = new ObjectInputStream(file);
+                var db = (AlchemyDb) in.readObject();
+                ret = new Alchemy(db);
+                ret.addRecipes(witherPotionRecipe());
+            }
+        }else {
+            var db = new AlchemyDb();
+            ret = new Alchemy(db);
+        }
+
+        eubr = new ExtendedUpgradedBrewingRecipe();
+        ret.addRecipes(eubr);
+        return ret;
+    }
+
+    void save(String path) throws IOException{
+        var dir = new File(path);
+        if(!dir.exists())
+            dir.mkdir();
+
+        db.recipes.remove(eubr);
+        try(var file = new FileOutputStream(path+"db.bin")){
+            var out = new ObjectOutputStream(file);
+            out.writeObject(db);
+        }
+    }
+
+    public static boolean isEffectPotion(ItemStack i){
+        return i != null && i.getType() == Material.POTION && i.hasItemMeta();
+    }
+
+    public void addRecipes(BrewingRecipe... recipes){
+        db.recipes.addAll(Arrays.asList(recipes));
+    }
+
+    public boolean isIngredient(ItemStack item){
+        for(var r: db.recipes){
+            if(r.getIngredient().isSimilar(item))
+                return true;
+        }
+        return false;
     }
 
     public void startBrewing(BrewerInventory inv, Plugin p){
@@ -65,7 +118,6 @@ public final class Alchemy {
 
     public ItemStack createExtendedUpgradedPotion(PotionType potionType){
         var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
-        //meta.setBasePotionData(new PotionData(potionType));
         meta.setBasePotionData(new PotionData(PotionType.THICK));
         meta.setColor(potionType.getEffectType().getColor());
         meta.setDisplayName(potionType.getEffectType().getName());
@@ -84,5 +136,26 @@ public final class Alchemy {
         var res = new ItemStack(Material.POTION);
         res.setItemMeta(meta);
         return res;
+    }
+
+    static BrewingRecipe witherPotionRecipe(){
+        var toBrew = new ItemStack(Material.POTION, 3);
+        var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
+        meta.setBasePotionData(new PotionData(PotionType.AWKWARD));
+        toBrew.setItemMeta(meta);
+
+        return new SimpleBrewingRecipe(Material.NETHER_STAR, toBrew, createWitherPotion(40*20));
+    }
+
+    static ItemStack createWitherPotion(int duration){
+        var item = new ItemStack(Material.POTION, 3);
+        var meta = (PotionMeta) Bukkit.getItemFactory().getItemMeta(Material.POTION);
+
+        meta.setColor(Color.BLACK);
+        meta.setDisplayName("Potion of Decay");
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.WITHER, duration, 0), true);
+
+        item.setItemMeta(meta);
+        return item;
     }
 }

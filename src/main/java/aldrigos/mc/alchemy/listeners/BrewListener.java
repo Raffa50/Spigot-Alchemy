@@ -10,13 +10,13 @@ import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import java.util.logging.Logger;
-
 public class BrewListener implements Listener {
     private final AlchemyPlugin plugin;
+    private final Alchemy api;
 
     public BrewListener(AlchemyPlugin plugin){
         this.plugin = plugin;
+        this.api = plugin.getApi();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -30,12 +30,12 @@ public class BrewListener implements Listener {
         final var brewInv = (BrewerInventory) e.getClickedInventory();
         final ItemStack ingr = e.getCursor();
 
-        if(ingr != null && ingr.getType() == Material.GOLD_NUGGET) {
+        if(ingr != null && api.isIngredient(ingr)) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 ingr.setAmount(ingr.getAmount() - 1);
                 brewInv.setIngredient(new ItemStack(Material.GOLD_NUGGET));
 
-                plugin.getApi().startBrewing(brewInv, plugin);
+                api.startBrewing(brewInv, plugin);
             }, 1L);
             ((Player) e.getWhoClicked()).updateInventory();
         }
@@ -51,7 +51,7 @@ public class BrewListener implements Listener {
 
         var brewInv = (BrewerInventory) e.getClickedInventory();
 
-        plugin.getApi().startBrewing(brewInv, plugin);
+        api.startBrewing(brewInv, plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -90,7 +90,7 @@ public class BrewListener implements Listener {
     private void handleSplash(BrewEvent e) {
         for(int i=0; i< 3; i++) {
             ItemStack result = e.getContents().getItem(i);
-            if(!Utils.isEffectPotion(result))
+            if(!Alchemy.isEffectPotion(result))
                 continue;
 
             var pot = (PotionMeta) result.getItemMeta();

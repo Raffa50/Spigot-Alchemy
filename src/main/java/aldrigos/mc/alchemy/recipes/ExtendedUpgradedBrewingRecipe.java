@@ -1,16 +1,18 @@
 package aldrigos.mc.alchemy.recipes;
 
 import aldrigos.mc.alchemy.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
 public class ExtendedUpgradedBrewingRecipe implements BrewingRecipe {
-    private final Alchemy api;
+    private transient final Alchemy api;
     private final static ItemStack ingredient = new ItemStack(Material.GOLD_NUGGET);
 
-    public ExtendedUpgradedBrewingRecipe(Alchemy api){
-        this.api = api;
+    public ExtendedUpgradedBrewingRecipe(){
+        var plugin = (AlchemyPlugin) Bukkit.getPluginManager().getPlugin("Alchemy");
+        this.api = plugin.getApi();
     }
 
     @Override
