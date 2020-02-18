@@ -57,6 +57,13 @@ public final class AlchemyDb {
 
         setDuration(PotionEffectType.WEAKNESS, false, false, 90*20);
         setDuration(PotionEffectType.WEAKNESS, true, false, 240*20);
+
+        setDuration(PotionEffectType.SLOW, false, false, 90*20);
+        setDuration(PotionEffectType.SLOW, true, false, 240*20);
+        setDuration(PotionEffectType.SLOW, false, true, 20*20);
+        setDuration(PotionEffectType.SLOW, true, true, 75*20);
+
+        setDuration(PotionEffectType.WITHER, false, false, 40*20);
     }
 
     public void remove(Material ingredient){
