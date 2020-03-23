@@ -52,8 +52,10 @@ public class BrewListener implements Listener {
             return;
 
         var brewInv = (BrewerInventory) e.getClickedInventory();
+        var ingr = brewInv.getIngredient();
 
-        api.startBrewing(e.getWhoClicked(),brewInv, plugin);
+        if(ingr != null && api.isIngredient(ingr))
+            api.startBrewing(e.getWhoClicked(),brewInv, plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

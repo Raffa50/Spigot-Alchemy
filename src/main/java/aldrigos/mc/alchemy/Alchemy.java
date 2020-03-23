@@ -22,7 +22,7 @@ public final class Alchemy {
         addRecipes(witherPotionRecipe(), new ExtendedUpgradedBrewingRecipe(this));
     }
 
-    public static boolean isEffectPotion(@NotNull ItemStack i){
+    public static boolean isEffectPotion(ItemStack i){
         return i != null && i.getType() == Material.POTION && i.hasItemMeta();
     }
 

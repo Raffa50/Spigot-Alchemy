@@ -1,6 +1,6 @@
 main: aldrigos.mc.alchemy.AlchemyPlugin
 name: Alchemy
-version: '0.2.0.3'
+version: '0.2.1.0'
 description: Potions fusion and custom potions API
 load: POSTWORLD
 author: Aldrigo Raffaele
