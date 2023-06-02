@@ -32,6 +32,7 @@ public class BrewListener implements Listener {
 
         if(ingr != null && api.isIngredient(ingr)) {
             var clone = ingr.clone();
+            clone.setAmount(1);
             ingr.setAmount(ingr.getAmount() - 1);
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
